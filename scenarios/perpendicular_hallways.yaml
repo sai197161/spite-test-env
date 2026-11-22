@@ -1,0 +1,42 @@
+# Scenario: perpendicular_hallways
+# What it tests: robot driving at max speed down a hallway has to detect an occluded actor
+# crossing at a perpendicular intersection, and replan (slow, stop, or route around) instead of
+# driving into it.
+
+name: perpendicular_hallways
+world: worlds/perpendicular_hallways.sdf
+
+robot:
+  model: spite_burger
+  spawn: {x: -4.5, y: 0.0, yaw: 0.0}
+  goal: {x: 4.5, y: 0.0, yaw: 0.0}
+  max_linear_velocity: 0.22   # m/s, TurtleBot3 Burger limit
+
+actors:
+  - name: crossing_actor
+    path: "paces y: -4.5 <-> 4.5 at x = 0, 1.0 m/s, looping"
+    crosses_intersection_at: [4.5, 14.0, 23.5, 33.0]   # sim time (s) when actor is at y = 0
+
+intersection_zone: {x_min: -1.0, x_max: 1.0, y_min: -1.0, y_max: 1.0}
+
+duration: 60.0          # s of sim time before the run times out
+
+pass_criteria:
+  reached_goal: true              # within 0.3 m of goal before duration
+  min_actor_distance: 0.5         # m, robot center to actor center, computed from poses
+                                  # (actors have no collision geometry, so contacts can't be used)
+  no_wall_collisions: true
+  replan_observed: true           # planner issues a new/modified path or velocity drops near the actor
+
+record:
+  topics:
+    - /scan
+    - /odom
+    - /tf
+    - /tf_static
+    - /cmd_vel
+    - /rgbd_camera/image
+    - /rgbd_camera/depth_image
+    - /rgbd_camera/camera_info
+    - /demo_cam/image
+  ground_truth: /world/perpendicular_hallways/dynamic_pose/info   # gz topic, actor + robot poses

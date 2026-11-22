@@ -1,0 +1,6 @@
+# sim outputs (videos, bags)
+results/
+
+# python
+__pycache__/
+*.pyc
