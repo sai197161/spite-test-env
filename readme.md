@@ -9,5 +9,6 @@ A collection of testing environments. The following scenarios will be added:
 
 ## Perpendicular hallways with collision
 A robot moving at max speed to arrive at a target location would intersect with a moving actor. In this scenario, the turtlebot should be forced to make replanning decisions, such as slowing down or moving around.
+
 ![A demo video](demos/perpendicular_hallways.gif)
 
